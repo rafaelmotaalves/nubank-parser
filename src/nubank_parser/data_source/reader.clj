@@ -12,5 +12,5 @@
     (reduce conj [] (line-seq rdr))))
 
 (defn read-entries []
-  (flatten (map read-file (get-data-files))))
+  (map read-file (get-data-files)))
 
