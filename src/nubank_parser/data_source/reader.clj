@@ -2,15 +2,15 @@
 (require '[clojure.java.io :as io])
 
 (def file-format ".csv")
-(def resources-directory (io/file "resources/"))
+(defn get-resources-directory [directory-path] (io/file directory-path))
 
-(defn- get-data-files []
-  (filter #(clojure.string/ends-with? % file-format) (file-seq resources-directory)))
+(defn- get-data-files [directory-path]
+  (filter #(clojure.string/ends-with? % file-format) (file-seq (get-resources-directory directory-path))))
 
 (defn- read-file [file-name]
   (with-open [rdr (io/reader file-name)]
     (reduce conj [] (line-seq rdr))))
 
-(defn read-entries []
-  (map read-file (get-data-files)))
+(defn read-entries [directory-path]
+  (map read-file (get-data-files directory-path)))
 
