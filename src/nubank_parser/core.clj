@@ -4,7 +4,8 @@
       [nubank-parser.data-source.parser :as parser]
       [nubank-parser.data-source.reader :as reader]
       [nubank-parser.transformations.group-by :as group-by]
-      [clojure.pprint :as pprint]))
+      [nubank-parser.presenters.simple-table :as simple-table]
+      ))
 
 (defn get-credit-card-entries [directory-path]
   (flatten (map parser/parse (reader/read-entries directory-path))))
@@ -14,7 +15,6 @@
   [directory-path]
   (let [credit-card-entries (get-credit-card-entries directory-path)]
     (doseq [[month entries] (group-by (group-by/comp-funcs :category group-by/month-year-str) credit-card-entries)]
-      (do
-        (println month)
-        (pprint/print-table entries)))))
+      (simple-table/print month entries)
+      )))
 
