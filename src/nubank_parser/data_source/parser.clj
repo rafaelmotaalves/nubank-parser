@@ -1,5 +1,7 @@
 (ns nubank-parser.data-source.parser)
-(require '[clj-time.coerce :as c])
+(require
+ '[clj-time.core :as time]
+ '[clj-time.coerce :as c])
 
 (defn- split-on-commas [str]
   "Splits a string on the commas"
@@ -17,8 +19,11 @@
   "Converts the header string into a list of keywords"
   (map keyword (split-on-commas header)))
 
+(defn- extract-new-columns [entry]
+  (assoc (assoc entry :month (time/month (:date entry))) :year (time/year (:date entry)))
+  )
+
 (defn parse [lines]
   "Parses a data source, returning a list of structured maps"
   (let [header (get-header-as-keywords (first lines))]
-    (map (comp convert-data-types (partial parse-csv-line header)) (drop 1 lines))))
- 
+    (map (comp extract-new-columns convert-data-types (partial parse-csv-line header)) (drop 1 lines))))
