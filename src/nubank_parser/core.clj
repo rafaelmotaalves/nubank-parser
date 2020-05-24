@@ -14,7 +14,7 @@
   "Reads a list of csv files and prints the corresponding maps"
   [& args]
   (let [credit-card-entries (get-credit-card-entries)]
-    (doseq [[month entries] (group-by/by-category credit-card-entries)]
+    (doseq [[month entries] (group-by (group-by/comp-funcs :category group-by/month-year-str) credit-card-entries)]
       (do
         (println month)
         (pprint/print-table entries)))))

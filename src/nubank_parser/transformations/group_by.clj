@@ -1,24 +1,11 @@
 (ns nubank-parser.transformations.group-by
   [:require [clj-time.core :as time]])
 
-(defn- year-month-hash [entry]
+(defn month-year-str [entry]
   (let [date (:date entry)]
-    (time/date-time (time/year date) (time/month date))))
+    (format "%02d/%04d" (time/month date) (time/year date))))
 
-(defn by-month [entries]
-  (group-by year-month-hash entries))
-
-(defn by-category [entries]
-  (group-by :category entries))
-
-(defn by-title [entries]
-  (group-by :title entries))
-
-
-(defn compose-group-by-key [entry functions]
-  (reduce (fn [a x] (str a "+" (apply x [entry]))) "" functions))
-
-(defn multi-key-group-by [entries & functions]
-  (group-by #(compose-group-by-key % functions) entries)
-  )
-
+(defn comp-funcs [& fns]
+  "Returns a functions that returns the combines the result of the passed functions"
+  (fn [x] (concat (map #(apply % [x]) fns)))
+)
