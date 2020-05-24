@@ -7,8 +7,12 @@
     ))
 
 (def cli-options [
+  ["-g" "--group-by FIELD" "Group by keys"
+   :parse-fn keyword
+   :validate [(fn [x] (some #(= x %) [:category :title :amount])) "Must be one of the valid columns"]
+   ]
   ["-h" "--help"]
-])
+  ])
 
 (defn usage [options-summary]
   (->> ["This is the nubank parser. It helps you to extract data from your nubank credit card bill csvs"
@@ -27,14 +31,17 @@
   "Reads a list of csv files and prints the corresponding maps"
   [& args]
   (let [{:keys [options arguments errors summary]} (parse-opts args  cli-options)]
-    (cond
-      (not-empty errors) (println (first errors))
-      (:help options) (println (usage summary))
-      (not-empty arguments) 
+    (do
+      (println options)
+      (cond
+        (not-empty errors) (println (first errors))
+        (:help options) (println (usage summary))
+        (not-empty arguments) 
         (let [directory-path (first arguments)]
-        (core/execute directory-path)
+          (core/execute directory-path options)
+          )
+        :else (println (usage summary))
+        )
       )
-      :else (println (usage summary))
-    )
   )
 )

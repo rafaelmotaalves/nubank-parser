@@ -4,9 +4,9 @@
     [clojure.pprint :as pprint]
     ))
 
-(defn print [header entries]
+(defn print-output [header entries]
     (do
-        (println header)
+        (println (clojure.string/join " - " header))
         (pprint/print-table entries)
     )
 )

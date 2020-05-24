@@ -12,9 +12,12 @@
 
 (defn execute
   "Reads a list of csv files and prints the corresponding maps"
-  [directory-path]
-  (let [credit-card-entries (get-credit-card-entries directory-path)]
-    (doseq [[month entries] (group-by (group-by/comp-funcs :category group-by/month-year-str) credit-card-entries)]
-      (simple-table/print month entries)
-      )))
+  [directory-path options]
+  (let [{group-str :group-by} options]
+    (let [credit-card-entries (get-credit-card-entries directory-path)]
+      (doseq [[month entries] (group-by (group-by/comp-funcs (keyword group-str)) credit-card-entries)]
+        (simple-table/print-output month entries)
+        ))
+    )
+  )
 

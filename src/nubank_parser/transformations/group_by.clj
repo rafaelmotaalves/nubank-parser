@@ -7,5 +7,5 @@
 
 (defn comp-funcs [& fns]
   "Returns a functions that returns the combines the result of the passed functions"
-  (fn [x] (concat (map #(apply % [x]) fns)))
+  (fn [x] (map #(apply % [x]) fns))
 )
