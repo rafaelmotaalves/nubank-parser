@@ -1,18 +1,19 @@
 (ns nubank-parser.cli
   (:gen-class)
   (:require
-    [clojure.tools.cli :refer [parse-opts]]
-    [clojure.string :refer [join]]
-    [nubank-parser.core :as core]
-    ))
+   [clojure.tools.cli :refer [parse-opts]]
+   [clojure.string :refer [join]]
+   [nubank-parser.core :as core]))
 
-(def cli-options [
-  ["-g" "--group-by FIELD" "Group by keys"
-   :parse-fn keyword
-   :validate [(fn [x] (some #(= x %) [:category :title :amount])) "Must be one of the valid columns"]
-   ]
-  ["-h" "--help"]
-  ])
+(def cli-options [["-w" "--where CONDITION" "A Clojure function that filters the result"
+                   :parse-fn #(load-string (str "#" %))
+                   :default (constantly true)
+                   :default-desc ""
+                   ]
+                  ["-g" "--group-by COLUMN" "Group by keys"
+                   :parse-fn keyword
+                   :validate [(fn [x] (some #(= x %) [:category :title :amount])) "Must be one of the valid columns"]]
+                  ["-h" "--help"]])
 
 (defn usage [options-summary]
   (->> ["This is the nubank parser. It helps you to extract data from your nubank credit card bill csvs"
@@ -24,8 +25,7 @@
         ""
         ""
         "Please refer to the manual page for more information."]
-       (join \newline))       
-)
+       (join \newline)))
 
 (defn -main
   "Reads a list of csv files and prints the corresponding maps"
@@ -36,12 +36,7 @@
       (cond
         (not-empty errors) (println (first errors))
         (:help options) (println (usage summary))
-        (not-empty arguments) 
+        (not-empty arguments)
         (let [directory-path (first arguments)]
-          (core/execute directory-path options)
-          )
-        :else (println (usage summary))
-        )
-      )
-  )
-)
+          (core/execute directory-path options))
+        :else (println (usage summary))))))

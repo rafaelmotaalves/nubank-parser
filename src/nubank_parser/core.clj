@@ -12,16 +12,14 @@
 (defn execute
   "Reads a list of csv files and prints the corresponding maps"
   [directory-path options]
-  (let [{group-column :group-by} options]
-    (let [credit-card-entries (get-credit-card-entries directory-path)]
+  (let [{group-column :group-by} options
+        {where-fn :where} options]
+    (let [credit-card-entries (filter where-fn (get-credit-card-entries directory-path))]
       (cond
         (empty? credit-card-entries) (print "No entries or csv files found on input directory")
         (not (nil? group-column))
         (doseq [[group entries] (group-by (group-by/comp-funcs group-column) credit-card-entries)]
           (simple-table/print-header group)
-          (simple-table/print-table entries)
-          )
-        :else (simple-table/print-table credit-card-entries)
-        )
-    )))
+          (simple-table/print-table entries))
+        :else (simple-table/print-table credit-card-entries)))))
 
