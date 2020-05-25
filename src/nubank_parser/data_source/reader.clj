@@ -12,5 +12,10 @@
     (reduce conj [] (line-seq rdr))))
 
 (defn read-entries [directory-path]
-  (map read-file (get-data-files directory-path)))
-
+  (let [data-files (get-data-files directory-path)]
+    (if (not-empty data-files)
+      (map read-file data-files)
+      (println "No csv files found input directory" directory-path)
+      )
+   )
+  )
