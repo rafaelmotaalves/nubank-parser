@@ -1,10 +1,8 @@
 (ns nubank-parser.transformations.group-by
-  [:require [clj-time.core :as time]])
+  [:require [nubank-parser.transformations.aggregate :refer [aggregate]]])
 
-(defn month-year-str [entry]
-  (let [date (:date entry)]
-    (format "%02d/%04d" (time/month date) (time/year date))))
+(defn group-by-column [rows column]
+  (group-by #(select-keys % [column]) rows))
 
-(defn comp-funcs [& fns]
-  "Returns a functions that returns the combines the result of the passed functions"
-  (fn [x] (map #(apply % [x]) fns)))
+(defn group-by-aggregate [rows aggregate-method group-column]
+  (reduce-kv (fn [arr key value] (conj arr (assoc key aggregate-method (aggregate aggregate-method value)))) [] (group-by-column rows group-column)))
