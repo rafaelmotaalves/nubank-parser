@@ -11,7 +11,7 @@
 
 (defn aggregate [method rows]
   (case method
-    :SUM (aggregate-sum rows)
-    :COUNT (aggregate-count rows)
-    :MEAN (aggregate-mean rows)
+    :sum (aggregate-sum rows)
+    :count (aggregate-count rows)
+    :mean (aggregate-mean rows)
     0))

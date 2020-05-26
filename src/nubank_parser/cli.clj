@@ -11,7 +11,7 @@
                    :default-desc ""]
                   ["-a" "--aggregate METHOD" "A aggregate method"
                    :parse-fn keyword
-                   :validate [(fn [x] (some #(= x %) [:SUM :COUNT :MEAN])) "Must be one of the valid aggregation methods"]]
+                   :validate [(fn [x] (some #(= x %) [:sum :count :mean])) "Must be one of the valid aggregation methods"]]
                   ["-g" "--group-by COLUMN" "Group by keys"
                    :parse-fn keyword
                    :validate [(fn [x] (some #(= x %) [:category :title :amount])) "Must be one of the valid columns"]]
