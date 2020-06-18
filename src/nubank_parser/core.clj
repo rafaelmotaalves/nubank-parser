@@ -20,6 +20,6 @@
           (#(filter where %))
           (#(cond
               (and aggregate group-by) (transformations.group-by/group-by-aggregate % aggregate group-by)
-              aggregate [(assoc {} aggregate (transformations.aggregate/aggregate % aggregate))]
+              aggregate [(assoc {} aggregate (transformations.aggregate/aggregate aggregate %))]
               :else %))
           (#(simple-table/print-table %))))))
