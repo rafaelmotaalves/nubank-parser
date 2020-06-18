@@ -14,7 +14,7 @@
 (defn execute
   "Reads a list of csv files and prints the corresponding maps"
   [directory-path options]
-  (let [{:keys [group-by aggregate where]} options]
+  (let [{:keys [group-by aggregate where limit]} options]
     (let [credit-card-entries (get-credit-card-entries directory-path)]
       (-> credit-card-entries
           (#(filter where %))
@@ -22,4 +22,5 @@
               (and aggregate group-by) (transformations.group-by/group-by-aggregate % aggregate group-by)
               aggregate [(assoc {} aggregate (transformations.aggregate/aggregate aggregate %))]
               :else %))
+          (#(if (> limit 0) (take limit %) %))
           (#(simple-table/print-table %))))))

@@ -15,6 +15,11 @@
                   ["-g" "--group-by COLUMN" "Group by keys"
                    :parse-fn keyword
                    :validate [(fn [x] (some #(= x %) [:category :title :amount])) "Must be one of the valid columns"]]
+                  ["-l" "--limit NUMBER" "Limit of rows to return"
+                    :parse-fn #(Integer/parseInt %)
+                    :validate [#(> % 0) "Limit value must bigger than 0"]
+                    :default -1
+                    ]
                   ["-h" "--help"]])
 
 (defn usage [options-summary]
